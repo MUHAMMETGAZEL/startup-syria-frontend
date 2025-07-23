@@ -542,7 +542,7 @@ function rotateMap(direction) {
 
 window.addEventListener('resize', () => {
   const bounds = document.getElementById('concentric-map').getBoundingClientRect();
-  centerX = bounds.width / 2;
-  centerY = bounds.height / 2;
+  let centerX = bounds.width / 2;
+  let centerY = bounds.height / 2;
   drawMap(); // أو إعادة إنشاء الخريطة بناءً على المتغيرات الجديدة
 });
