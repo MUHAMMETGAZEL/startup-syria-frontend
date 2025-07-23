@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>خريطة منظومة الابتكار في سوريا - Startup Syria</title>
-    
-    <!-- المكتبات الخارجية -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://startup-syria-backend.onrender.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- ملفات الأنماط -->
+   
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/transitions.css">
 </head>
@@ -58,13 +58,12 @@
             <i class="fas fa-list-alt"></i> الاقتراحات
         </button>
         
-        <!-- زر اقتراح شركة جديد -->
+      
         <button class="control-btn suggest-btn" id="suggest-company" style="display: none;">
             <i class="fas fa-lightbulb"></i> اقترح شركة
         </button>
     </div>
     
-    <!-- نافذة عرض الاقتراحات -->
     <div class="modal" id="suggestions-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,7 +74,7 @@
             </div>
             <div class="suggestions-container">
                 <div class="suggestions-list" id="suggestions-list">
-                    <!-- سيتم ملؤها ديناميكياً -->
+                   
                 </div>
             </div>
             <div class="form-actions">
@@ -88,7 +87,7 @@
     
 
 
-    <!-- نافذة اقتراح شركة جديدة -->
+  
     <div class="modal" id="suggest-company-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -144,7 +143,7 @@
         </div>
     </div>
 
-    <!-- حاوية الخريطة -->
+    
     <div class="map-container">
         <div class="transition-overlay" id="transition-overlay">
             <div class="transition-content">
@@ -157,8 +156,7 @@
             <p>المركز الرئيسي</p>
         </div>
     </div>
-    
-    <!-- الإشعارات -->
+  
     <div class="notification" id="notification">
         <div class="notification-content">
             <div class="notification-icon">
@@ -171,7 +169,7 @@
         </div>
     </div>
     
-    <!-- قسم فريق العمل -->
+   
     <div class="team-section">
         <h2 class="team-title">فريق العمل</h2>
         <div class="team-grid">
@@ -253,7 +251,7 @@
         </div>
     </div>
 
-    <!-- الإحصائيات -->
+   
     <div class="statistics">
         <div class="stat-box">
             <div class="stat-value">42</div>
@@ -273,7 +271,7 @@
         </div>
     </div>
     
-    <!-- التذييل -->
+  
     <div class="footer">
         <div class="database-info">
             <i class="fas fa-database db-icon"></i>
@@ -282,7 +280,7 @@
         <p>Source: <span class="highlight">Data Collected by Startup Syria 2025</span></p>
     </div>
     
-    <!-- نوافذ التعديل والإضافة -->
+    
     <div class="modal" id="add-section-modal">
         <div class="modal-content">
             <div class="modal-header">
