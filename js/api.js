@@ -1,5 +1,5 @@
 const ApiClient = {
-    baseUrl: 'http://localhost:5001/api', // تغيير إلى المنفذ الجديد
+    baseUrl: 'https://startup-syria-backend.onrender.com/api', // تغيير إلى المنفذ الجديد
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
       // بناء المسار الصحيح
       const fullUrl = this.baseUrl + endpoint;
