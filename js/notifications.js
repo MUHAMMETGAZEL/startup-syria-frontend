@@ -1,4 +1,4 @@
-// وظيفة لعرض الإشعارات
+
 function showNotification(title, message) {
     const notification = document.getElementById('notification');
     const titleElement = document.getElementById('notification-title');
@@ -11,7 +11,7 @@ function showNotification(title, message) {
     }, 3000);
 }
 
-// تحديث وقت آخر حفظ
+
 function updateLastSaveTime() {
     const now = new Date();
     document.getElementById('last-save-time').textContent = now.toLocaleTimeString('ar-SA');
