@@ -1,7 +1,7 @@
 
 const database = firebase.database();
 
-// متغيرات عامة
+
 let sectionDatabase = {};
 let activeSection = null;
 let rotationAngle = 0;
@@ -10,7 +10,7 @@ let licenseActive = false;
 const sectionCount = 8;
 const MAX_NESTING_LEVEL = 1;
 
-// عناصر DOM
+
 const licenseInput = document.getElementById('license-input');
 const licenseBtn = document.getElementById('license-btn');
 const licenseStatus = document.getElementById('license-status');
@@ -21,13 +21,13 @@ const centerX = width / 2;
 const centerY = height / 2;
 let svg = null;
 
-// الحلقات في الدائرة الرئيسية
+
 const rings = [
     { id: 1, innerRadius: 50, outerRadius: 150, name: "الحلقة الداخلية", color: "rgba(76, 161, 175, 0.3)" },
     { id: 2, innerRadius: 150, outerRadius: 350, name: "الحلقة الخارجية", color: "rgba(255, 126, 95, 0.3)" }
 ];
 
-// القطاعات الرئيسية
+
 const sectors = [
     { 
         id: 1, 
@@ -116,13 +116,13 @@ function initMap() {
     drawMap();
 }
 
-// رسم الخريطة الرئيسية
+
 function drawMap() {
     if (!svg) return;
     
     svg.selectAll("*").remove();
     
-    // حساب إجمالي عدد الأقسام الفرعية
+   
     let totalLeaves = 0;
     sectors.forEach(sector => {
         sector.subsections.forEach(subsection => {
@@ -193,11 +193,11 @@ function drawMap() {
                         .attr("transform", `translate(${x}, ${y}) rotate(${rotation})`)
                         .attr("class", "subsection-label");
                     
-                    // بناء نص التسمية مع النسبة المئوية
+                
                     const maxCharsPerLine = 20;
                     let lines = [];
                     
-                    // إضافة اسم القسم الفرعي
+                    
                     if (subsectionName.length > maxCharsPerLine) {
                         const words = subsectionName.split(' ');
                         let line = "";
@@ -214,7 +214,7 @@ function drawMap() {
                         lines = [subsectionName];
                     }
                     
-                    // إضافة النسبة المئوية
+             
                     lines.push(percentageText);
                     
                     const lineHeight = 12;
@@ -324,31 +324,31 @@ function drawMap() {
     });
 }
 
-// إنشاء خريطة جديدة للقسم الفرعي
+
 function createNewCircleMap(subsectionName, sectorColor) {
     const transitionOverlay = document.getElementById('transition-overlay');
     const concentricMap = document.getElementById('concentric-map');
     
-    // تطبيق تأثير التصغير على الخريطة الحالية
+    
     concentricMap.classList.add('zoom-out');
     
-    // الانتظار حتى يكتمل تأثير التصغير
+  
     setTimeout(() => {
-        // إزالة الخريطة الحالية
+        
         if (svg) {
             svg.selectAll("*").remove();
         }
         
-        // تحديث مركز الدائرة
+       
         document.querySelector('.center-circle').innerHTML = `
             <h3>${subsectionName}</h3>
         `;
         
-        // تطبيق تأثير التكبير للخريطة الجديدة
+  
         concentricMap.classList.remove('zoom-out');
         concentricMap.classList.add('zoom-in');
         
-        // إنشاء الخريطة الفرعية الجديدة
+       
         const currentData = sectionDatabase[subsectionName];    
         if (!currentData) {
             const parentSector = sectors.find(sector => 
@@ -365,7 +365,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
         const sectionNames = sectionDatabase[subsectionName].sectionNames;
         const sectionLinks = sectionDatabase[subsectionName].sectionLinks;
         
-        // تحديد عدد الحلقات المطلوبة بناءً على عدد الأقسام
+
         const baseSectionsPerRing = 20;
         let remainingSections = sectionNames.length;
         let dynamicRingCounts = [];
@@ -379,7 +379,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
         }
         const ringThickness = 350;
                 
-        // إنشاء الحلقات
+
         let sectionIndexGlobal = 0;
 
         for (let ringIndex = 0; ringIndex < dynamicRingCounts.length; ringIndex++) {
@@ -396,7 +396,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
             const ringOuterRadius = ringInnerRadius + 140;
 
             if (ringIndex > 0) {
-                // رسم حلقة التحديد
+         
                 svg.append("circle")
                     .attr("cx", centerX)
                     .attr("cy", centerY)
@@ -502,7 +502,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
         
         activeSection = subsectionName;
         
-        // إخفاء شاشة الانتقال بعد انتهاء التأثير
+        
         setTimeout(() => {
             concentricMap.classList.remove('zoom-in');
             transitionOverlay.classList.remove('active');
@@ -510,39 +510,38 @@ function createNewCircleMap(subsectionName, sectorColor) {
     }, 400);
 }
 
-// العودة إلى الخريطة الرئيسية
+
 function transitionBackToMain() {
     const transitionOverlay = document.getElementById('transition-overlay');
     const concentricMap = document.getElementById('concentric-map');
     
-    // تطبيق تأثير التصغير على الخريطة الحالية
+
     concentricMap.classList.add('zoom-out');
     
-    // الانتظار حتى يكتمل تأثير التصغير
+    
     setTimeout(() => {
-        // إزالة الخريطة الحالية
+      
         if (svg) {
             svg.selectAll("*").remove();
         }
         
-        // تحديث مركز الدائرة
+   
         document.querySelector('.center-circle').innerHTML = `
             <h3>سوريا</h3>
             <p>المركز الرئيسي</p>
         `;
         
-        // تطبيق تأثير التكبير للخريطة الرئيسية
+   
         concentricMap.classList.remove('zoom-out');
         concentricMap.classList.add('zoom-in');
         
-        // إنشاء الخريطة الرئيسية
+      
         nestingLevel = 0;
         rotationAngle = 0;
         drawMap();
         document.getElementById('rotation-controls').style.display = 'flex';
         activeSection = null;
         
-        // إخفاء شاشة الانتقال بعد انتهاء التأثير
         setTimeout(() => {
             concentricMap.classList.remove('zoom-in');
             transitionOverlay.classList.remove('active');
@@ -550,13 +549,13 @@ function transitionBackToMain() {
     }, 800);
 }
 
-// تدوير الخريطة
+
 function rotateMap(direction) {
     rotationAngle += direction * Math.PI/4;
     drawMap();
 }
 
-// وظيفة لعرض الإشعارات
+
 function showNotification(title, message) {
     const notification = document.getElementById('notification');
     const titleElement = document.getElementById('notification-title');
@@ -569,13 +568,13 @@ function showNotification(title, message) {
     }, 3000);
 }
 
-// تحديث وقت آخر حفظ
+
 function updateLastSaveTime() {
     const now = new Date();
     document.getElementById('last-save-time').textContent = now.toLocaleTimeString('ar-SA');
 }
 
-// تحميل حالة الترخيص من localStorage
+
 function loadLicenseStatus() {
     const savedLicense = localStorage.getItem('innovationMapLicense');
     if (savedLicense) {
@@ -590,7 +589,7 @@ function loadLicenseStatus() {
     updateLicenseUI();
 }
 
-// حفظ حالة الترخيص في localStorage
+
 function saveLicenseStatus() {
     try {
         const licenseData = {
@@ -603,7 +602,7 @@ function saveLicenseStatus() {
     }
 }
 
-// تحديث واجهة الترخيص
+
 function updateLicenseUI() {
     if (licenseActive) {
         licenseStatus.innerHTML = '<span class="license-active"><i class="fas fa-check-circle"></i> الترخيص مفعل</span>';
@@ -622,7 +621,7 @@ function updateLicenseUI() {
 
 
 
-// تفعيل الترخيص
+
 async function activateLicense() {
     const enteredKey = licenseInput.value.trim();
     
@@ -631,7 +630,7 @@ async function activateLicense() {
         return;
     }
     
-    // إظهار رسالة تحميل
+
     licenseStatus.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> جاري التحقق من الترخيص...</span>';
     
     try {
@@ -655,7 +654,6 @@ async function activateLicense() {
     updateLicenseUI();
 }
 
-// تحديث قائمة الأقسام
 function updateSectionList() {
     const sectionList = document.getElementById('section-list');
     sectionList.innerHTML = '';
@@ -687,7 +685,7 @@ function updateSectionList() {
     });
 }
 
-// تحميل الاقتراحات
+
 function loadSuggestions() {
     const suggestionsList = document.getElementById('suggestions-list');
     suggestionsList.innerHTML = '<div class="loading-suggestions"><i class="fas fa-spinner fa-spin"></i> جاري تحميل الاقتراحات...</div>';
@@ -716,15 +714,14 @@ function loadSuggestions() {
                 suggestions.push(suggestion);
             });
             
-            // ترتيب الاقتراحات من الأحدث إلى الأقدم
+          
             suggestions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
             suggestions.forEach((suggestion) => {
                 const suggestionItem = document.createElement('div');
                 suggestionItem.className = 'suggestion-item';
                 suggestionItem.dataset.id = suggestion.id;
-                
-                // تنسيق تاريخ الاقتراح
+             
                 const date = new Date(suggestion.timestamp);
                 const formattedDate = date.toLocaleDateString('ar-SA', {
                     year: 'numeric',
@@ -803,7 +800,7 @@ function isTokenExpired(token) {
       const now = Math.floor(Date.now() / 1000);
       return payload.exp < now;
     } catch (e) {
-      return true; // أي خطأ يعني أن التوكن غير صالح
+      return true; 
     }
   }
   
@@ -832,7 +829,7 @@ function isTokenExpired(token) {
 
 
 
-// الاستماع للتحديثات في الوقت الحقيقي للاقتراحات
+
 function setupSuggestionsRealtime() {
     try {
         const suggestionsRef = database.ref('suggestions');
@@ -847,7 +844,6 @@ function setupSuggestionsRealtime() {
     }
 }
 
-// تأكد من وجود جميع الأقسام في قاعدة البيانات
 function ensureAllSectionsExist() {
     let hasChanges = false;
     sectors.forEach(sector => {
@@ -868,7 +864,7 @@ function ensureAllSectionsExist() {
     }
 }
 
-// حفظ البيانات محلياً
+
 function saveDataLocally() {
     try {
         const dataToSave = {
@@ -908,7 +904,6 @@ async function saveData() {
     }
 }
 
-// تهيئة قاعدة البيانات
 function initializeDatabase() {
     sectors.forEach(sector => {
         sector.subsections.forEach(subsection => {
@@ -922,7 +917,7 @@ function initializeDatabase() {
     saveData();
 }
 
-// إعداد تحديثات الوقت الحقيقي
+
 function setupRealtimeUpdates() {
     setInterval(async () => {
         try {
@@ -946,28 +941,21 @@ function setupRealtimeUpdates() {
       }, 30000);      
 }
 
-// تهيئة التطبيق
+
 async function initApp() {
-    // تحميل حالة الترخيص
+
     loadLicenseStatus();
-    
-    // تحميل البيانات
     await loadData();
-    
-    // إعداد تحديثات الوقت الحقيقي
     setupRealtimeUpdates();
-    
-    // إعداد تحديثات الاقتراحات في الوقت الحقيقي
+  
     setupSuggestionsRealtime();
-    
-    // إعداد واجهة المستخدم
+
     updateLicenseUI();
     initMap();
     
-    // إعداد مستمعات الأحداث
+
     setupEventListeners();
     
-    // حفظ دوري للبيانات
     setInterval(() => {
         if (Object.keys(sectionDatabase).length > 0) {
             saveDataLocally();
@@ -975,7 +963,6 @@ async function initApp() {
     }, 30000);
 }
 
-// تحميل البيانات
 async function loadData() {
     try {
         const localData = localStorage.getItem('innovationMapData');
@@ -1016,20 +1003,20 @@ async function loadData() {
     }
 }
 
-// إعداد مستمعات الأحداث
+
 function setupEventListeners() {
-    // مركز الخريطة
+    
     document.querySelector('.center-circle').addEventListener('click', transitionBackToMain);
     
-    // أزرار التحكم
+   
     document.getElementById('reset-view').addEventListener('click', transitionBackToMain);
     document.getElementById('rotate-left').addEventListener('click', () => rotateMap(-1));
     document.getElementById('rotate-right').addEventListener('click', () => rotateMap(1));
     
-    // الترخيص
+    
     licenseBtn.addEventListener('click', activateLicense);
     
-    // نوافذ الإضافة والتعديل
+
     document.getElementById('add-section').addEventListener('click', function() {
         if (!licenseActive) {
             showNotification('خطأ في الترخيص', 'يجب تفعيل الترخيص أولاً');
@@ -1082,7 +1069,7 @@ function setupEventListeners() {
         }
     });
     
-    // نافذة تعديل الأقسام
+    
     document.getElementById('edit-section').addEventListener('click', function() {
         if (!licenseActive) {
             showNotification('خطأ في الترخيص', 'يجب تفعيل الترخيص أولاً');
@@ -1137,7 +1124,7 @@ function setupEventListeners() {
         document.getElementById('edit-section-modal').classList.remove('active');
     });
     
-    // نافذة اقتراحات الشركات
+   
     document.getElementById('suggest-company').addEventListener('click', function() {
         document.getElementById('suggest-company-modal').classList.add('active');
         document.getElementById('company-name').value = '';
@@ -1156,7 +1143,7 @@ function setupEventListeners() {
         document.getElementById('suggest-company-modal').classList.remove('active');
     });
     
-    // نافذة عرض الاقتراحات
+
     document.getElementById('view-suggestions').addEventListener('click', function() {
         document.getElementById('suggestions-modal').classList.add('active');
         loadSuggestions();
@@ -1170,7 +1157,7 @@ function setupEventListeners() {
         document.getElementById('suggestions-modal').classList.remove('active');
     });
     
-    // معالجة تقديم نموذج الاقتراح
+   
     document.querySelector('.suggestion-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -1194,7 +1181,6 @@ function setupEventListeners() {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
         submitBtn.disabled = true;
         
-        // حفظ الاقتراح في Firebase
         const suggestionsRef = database.ref('suggestions');
         suggestionsRef.push(companyData)
             .then(() => {
@@ -1211,9 +1197,9 @@ function setupEventListeners() {
             });
     });
     
-    // حفظ قبل إغلاق النافذة
+
     window.addEventListener('beforeunload', saveDataLocally);
 }
 
-// بدء التطبيق عند تحميل الصفحة
+
 document.addEventListener('DOMContentLoaded', initApp);
