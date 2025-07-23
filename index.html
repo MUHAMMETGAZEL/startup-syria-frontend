@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خريطة منظومة الابتكار في سوريا - Startup Syria</title>
+    
+    <!-- المكتبات الخارجية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ملفات الأنماط -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/transitions.css">
+</head>
+<body>
+    
+    
+    <div class="header">
+        <h1>خريطة منظومة الشركات الناشئة في سوريا</h1>
+        <h2>Syrian Startup Ecosystem Map</h2>
+    </div>
+    
+    
+    <div class="license-control">
+        <input type="password" class="license-input" id="license-input" placeholder="أدخل مفتاح الترخيص">
+        <button class="license-btn" id="license-btn">تفعيل الترخيص</button>
+    </div>
+    
+    <div class="license-status" id="license-status">
+        <span class="license-inactive"><i class="fas fa-times-circle"></i> الترخيص غير مفعل</span>
+    </div>
+    
+    <div class="controls">
+        <button class="control-btn" id="reset-view">
+            <i class="fas fa-sync-alt"></i> إعادة تعيين العرض
+        </button>
+        <button class="control-btn" id="add-section">
+            <i class="fas fa-plus-circle"></i> إضافة قسم جديد
+        </button>
+        <button class="control-btn" id="edit-section">
+            <i class="fas fa-edit"></i> تعديل الأقسام
+        </button>
+        
+        <div class="rotation-controls" id="rotation-controls">
+            <div class="rotation-btn" id="rotate-left" title="تدوير لليسار">
+                <i class="fas fa-undo"></i>
+            </div>
+            <div class="rotation-btn" id="rotate-right" title="تدوير لليمين">
+                <i class="fas fa-redo"></i>
+            </div>
+        </div>
+
+        <button class="control-btn suggestions-btn" id="view-suggestions" style="display: none;">
+            <i class="fas fa-list-alt"></i> الاقتراحات
+        </button>
+        
+        <!-- زر اقتراح شركة جديد -->
+        <button class="control-btn suggest-btn" id="suggest-company" style="display: none;">
+            <i class="fas fa-lightbulb"></i> اقترح شركة
+        </button>
+    </div>
+    
+    <!-- نافذة عرض الاقتراحات -->
+    <div class="modal" id="suggestions-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">قائمة الاقتراحات المقدمة</h3>
+                <button class="close-btn" id="close-suggestions-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="suggestions-container">
+                <div class="suggestions-list" id="suggestions-list">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="form-btn secondary" id="close-suggestions-btn">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <!-- نافذة اقتراح شركة جديدة -->
+    <div class="modal" id="suggest-company-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">اقتراح شركة جديدة</h3>
+                <button class="close-btn" id="close-suggest-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="suggestion-form">
+                <div class="form-group">
+                    <label for="company-name">اسم الشركة *</label>
+                    <input type="text" id="company-name" required placeholder="أدخل اسم الشركة">
+                </div>
+                
+                <div class="form-group">
+                    <label for="company-field">مجال الشركة *</label>
+                    <select id="company-field" required>
+                        <option value="">اختر مجال الشركة</option>
+                        <option value="تكنولوجيا">تكنولوجيا</option>
+                        <option value="تمويل">تمويل واستثمار</option>
+                        <option value="تعليم">تعليم وبحث</option>
+                        <option value="بنية تحتية">بنية تحتية</option>
+                        <option value="دعم">دعم واستشارات</option>
+                        <option value="سياسات">سياسات وتنظيم</option>
+                        <option value="أخرى">مجال آخر</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company-description">وصف عن الشركة *</label>
+                    <textarea id="company-description" required placeholder="أدخل وصفاً مختصراً عن الشركة ونشاطها"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company-location">موقع الشركة *</label>
+                    <input type="text" id="company-location" required placeholder="المدينة والمنطقة">
+                </div>
+                
+                <div class="form-group">
+                    <label for="company-website">رابط موقع الشركة أو معرفعها على مواقع التواصل الإجتماعي (اختياري)</label>
+                    <input type="url" id="company-website" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="form-btn cancel-btn" id="cancel-suggest-btn">
+                        إلغاء الطلب
+                    </button>
+                    <button type="submit" class="form-btn submit-btn">
+                        <i class="fas fa-paper-plane"></i> إرسال الاقتراح
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- حاوية الخريطة -->
+    <div class="map-container">
+        <div class="transition-overlay" id="transition-overlay">
+            <div class="transition-content">
+                <div class="transition-spinner"></div>
+            </div>
+        </div>
+        <div id="concentric-map"></div>
+        <div class="center-circle">
+            <h3>سوريا</h3>
+            <p>المركز الرئيسي</p>
+        </div>
+    </div>
+    
+    <!-- الإشعارات -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-text">
+                <h3 id="notification-title">تمت العملية بنجاح!</h3>
+                <p id="notification-message">تم إضافة قسم جديد بنجاح</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- قسم فريق العمل -->
+    <div class="team-section">
+        <h2 class="team-title">فريق العمل</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-name">أحمد محمد</div>
+                <div class="member-role">مطور واجهات أمامية</div>
+                <div class="member-description">
+                    متخصص في تطوير واجهات المستخدم باستخدام React و D3.js، مع خبرة في تصميم التفاعلات المتقدمة والرسوم البيانية التفاعلية.
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/ahmed-mohamed" target="_blank" class="social-link linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/ahmed-mohamed" target="_blank" class="social-link github">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="mailto:ahmed@startupsyria.com" class="social-link email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-name">سارة أحمد</div>
+                <div class="member-role">مصممة UX/UI</div>
+                <div class="member-description">
+                    خبيرة في تصميم تجربة المستخدم وواجهات التطبيقات، متخصصة في إنشاء تصاميم بديهية وجذابة تركز على احتياجات المستخدم.
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/sara-ahmed" target="_blank" class="social-link linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/sara-ahmed" target="_blank" class="social-link github">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/sara_ahmed" target="_blank" class="social-link twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-name">محمد علي</div>
+                <div class="member-role">مطور خلفي</div>
+                <div class="member-description">
+                    متخصص في تطوير الخوادم وقواعد البيانات، خبير في Firebase و Node.js مع التركيز على الأمان وقابلية التوسع.
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/mohamed-ali" target="_blank" class="social-link linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/mohamed-ali" target="_blank" class="social-link github">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="mailto:mohamed@startupsyria.com" class="social-link email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-name">فاطمة حسن</div>
+                <div class="member-role">محللة بيانات</div>
+                <div class="member-description">
+                    خبيرة في تحليل البيانات وإنشاء التقارير، متخصصة في استخراج الرؤى من البيانات المعقدة وتحويلها إلى معلومات قابلة للتنفيذ.
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/fatima-hassan" target="_blank" class="social-link linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://twitter.com/fatima_hassan" target="_blank" class="social-link twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="mailto:fatima@startupsyria.com" class="social-link email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الإحصائيات -->
+    <div class="statistics">
+        <div class="stat-box">
+            <div class="stat-value">42</div>
+            <div class="stat-label">منظمة داعمة</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">18</div>
+            <div class="stat-label">حاضنة أعمال</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">127</div>
+            <div class="stat-label">مشروع ناشئ</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">$5.2M</div>
+            <div class="stat-label">استثمارات</div>
+        </div>
+    </div>
+    
+    <!-- التذييل -->
+    <div class="footer">
+        <div class="database-info">
+            <i class="fas fa-database db-icon"></i>
+            <span>جميع التغييرات محفوظة في قاعدة البيانات المحلية - آخر حفظ: <span id="last-save-time">لم يتم الحفظ بعد</span></span>
+        </div>
+        <p>Source: <span class="highlight">Data Collected by Startup Syria 2025</span></p>
+    </div>
+    
+    <!-- نوافذ التعديل والإضافة -->
+    <div class="modal" id="add-section-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة قسم جديد</h3>
+                <button class="close-btn" id="close-add-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="new-section-name">اسم القسم الجديد</label>
+                <input type="text" id="new-section-name" placeholder="أدخل اسم القسم الجديد هنا">
+            </div>
+            <div class="form-group">
+                <label for="section-link">رابط القسم (اختياري)</label>
+                <input type="url" id="section-link" placeholder="https://example.com">
+            </div>
+            <div class="form-actions">
+                <button class="form-btn secondary" id="cancel-add-btn">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="form-btn primary" id="confirm-add-btn">
+                    <i class="fas fa-plus"></i> إضافة القسم
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="edit-section-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">تعديل الأقسام</h3>
+                <button class="close-btn" id="close-edit-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="section-select">اختر القسم للتعديل</label>
+                <div class="section-list" id="section-list"></div>
+            </div>
+            <div class="form-group">
+                <label for="edit-section-content">اسم القسم الجديد</label>
+                <input type="text" id="edit-section-content" placeholder="أدخل الاسم الجديد للقسم">
+            </div>
+            <div class="form-group">
+                <label for="edit-section-link">رابط القسم</label>
+                <input type="url" id="edit-section-link" placeholder="https://example.com">
+            </div>
+            <div class="form-actions">
+                <button class="form-btn secondary" id="cancel-edit-btn">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="form-btn primary" id="confirm-edit-btn">
+                    <i class="fas fa-save"></i> حفظ التغييرات
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
