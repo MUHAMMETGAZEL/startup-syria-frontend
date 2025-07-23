@@ -25,7 +25,7 @@ const licenseStatus = document.getElementById('license-status');
     } catch (error) {
         licenseActive = false;
         
-        // رسالة خطأ أكثر وصفية
+       
         let errorMessage = 'فشل في الاتصال بالخادم';
         if (error.message.includes('Failed to fetch')) {
             errorMessage = 'تعذر الاتصال بالخادم. تأكد من تشغيل الخادم الخلفي';
@@ -45,13 +45,13 @@ function isTokenExpired(token) {
     const now = Math.floor(Date.now() / 1000);
     return payload.exp < now;
   } catch (e) {
-    return true; // أي خطأ يعني أن التوكن غير صالح
+    return true; 
   }
 }
 
 
 
-// تحميل حالة الترخيص من localStorage
+
 function loadLicenseStatus() {
   const token = localStorage.getItem('token');
   if (token && !isTokenExpired(token)) {
@@ -69,11 +69,11 @@ function loadTokenState() {
   }
 
   async function initApp() {
-    loadTokenState(); // <-- أضف هذا السطر
-    // باقي الكود...
+    loadTokenState(); // 
+  
   }
 
-// تحديث واجهة الترخيص
+
 function updateLicenseUI() {
   if (licenseActive) {
     licenseStatus.innerHTML = '<span class="license-active"><i class="fas fa-check-circle"></i> الترخيص مفعل</span>';
@@ -90,12 +90,11 @@ function updateLicenseUI() {
   }
 }
 
-// إعداد مستمعات الأحداث للترخيص
+
 function setupLicenseListeners() {
   licenseBtn.addEventListener('click', activateLicense);
 }
 
-// استدعاء التحميل الأولي
 loadLicenseStatus();
 
 
