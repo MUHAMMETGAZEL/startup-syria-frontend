@@ -1,13 +1,13 @@
 const ApiClient = {
-    baseUrl: 'https://startup-syria-backend.onrender.com/api', // تغيير إلى المنفذ الجديد
+    baseUrl: 'https://startup-syria-backend.onrender.com/api', 
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
-      // بناء المسار الصحيح
+     
       const fullUrl = this.baseUrl + endpoint;
       const headers = {};
       const options = {
           method,
           headers,
-          credentials: 'same-origin' // إضافة هذه السطر
+          credentials: 'same-origin'
 
       };
       
@@ -23,10 +23,9 @@ const ApiClient = {
       }
       
       try {
-          // استخدام fullUrl هنا
           const response = await fetch(fullUrl, options);
           
-          // التحقق من حالة 401 (غير مصرح)
+         
           if (response.status === 401) {
               licenseActive = false;
               updateLicenseUI();
