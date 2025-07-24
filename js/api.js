@@ -48,7 +48,7 @@ const ApiClient = {
 getSuggestions() {
     return this.request('/suggestions', 'GET', null, true); // يجب أن يكون true هنا
   },
-  
+  /*
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
     const fullUrl = this.baseUrl + endpoint;
     const headers = {};
@@ -91,6 +91,7 @@ getSuggestions() {
   }
   
 ,
+*/
   
   updateSuggestionStatus(id, newStatus) {
     return this.request(`/suggestions/${id}/status`, 'PUT', { status: newStatus }, true);
