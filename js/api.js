@@ -1,7 +1,7 @@
 const ApiClient = {
     baseUrl: 'https://startup-syria-backend.onrender.com/api', 
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
-      const BASE_URL = 'https://startup-syria-backend.onrender.com/api';
+     
       const fullUrl = this.baseUrl + endpoint;
       const headers = {};
       const options = {
@@ -46,7 +46,7 @@ const ApiClient = {
   
 
 getSuggestions() {
-    return this.request('${BASE_URL}/suggestions', 'GET', null, true); // يجب أن يكون true هنا
+    return this.request('/suggestions', 'GET', null, true); // يجب أن يكون true هنا
   },
   /*
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
@@ -94,27 +94,27 @@ getSuggestions() {
 */
   
   updateSuggestionStatus(id, newStatus) {
-    return this.request(`${BASE_URL}/suggestions/${id}/status`, 'PUT', { status: newStatus }, true);
+    return this.request(`/suggestions/${id}/status`, 'PUT', { status: newStatus }, true);
   },
   
   deleteSuggestion(id) {
-    return this.request(`${BASE_URL}/suggestions/${id}`, 'DELETE', null, true);
+    return this.request(`/suggestions/${id}`, 'DELETE', null, true);
   },
 
   login(licenseKey) {
-      return this.request('${BASE_URL}/auth/login', 'POST', { licenseKey });
+      return this.request('/auth/login', 'POST', { licenseKey });
   },
   
   getData() {
-      return this.request(${BASE_URL}'/data', 'GET');
+      return this.request('/data', 'GET');
   },
   
   saveData(data) {
-      return this.request(${BASE_URL}'/data', 'POST', data, true);
+      return this.request('/data', 'POST', data, true);
   },
   
   submitSuggestion(suggestion) {
-      return this.request('${BASE_URL}/suggestions', 'POST', suggestion);
+      return this.request('/suggestions', 'POST', suggestion);
   },
 
 
