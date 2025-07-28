@@ -141,23 +141,24 @@ function setupModalListeners() {
     });
     
     // معالجة تقديم نموذج الاقتراح
-    document.querySelector('.suggestion-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const companyData = {
-        name: document.getElementById('company-name').value,
-        field: document.getElementById('company-field').value,
-        description: document.getElementById('company-description').value,
-        location: document.getElementById('company-location').value,
-        website: document.getElementById('company-website').value || '',
-        timestamp: new Date().toISOString(),
-        status: 'pending'
-      };
-      
-      if (!companyData.name || !companyData.field || !companyData.description || !companyData.location) {
-        showNotification('خطأ في الإدخال', 'الرجاء تعبئة جميع الحقول المطلوبة');
-        return;
-      }
+  document.querySelector('.suggestion-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const companyData = {
+    name: document.getElementById('company-name').value,
+    field: document.getElementById('company-field').value,
+    description: document.getElementById('company-description').value,
+    location: document.getElementById('company-location').value,
+    website: document.getElementById('company-website').value || ''
+  };
+  
+  // التحقق من المدخلات
+  const errors = validateSuggestion(companyData);
+  
+  if (errors.length > 0) {
+    showNotification('خطأ في الإدخال', errors.join('<br>'));
+    return;
+  }
       
       const submitBtn = document.querySelector('.suggestion-form .submit-btn');
       const originalBtnText = submitBtn.innerHTML;
