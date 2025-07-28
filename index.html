@@ -2,28 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
 
-<!-- استبدال كامل تاج CSP -->
+
 <meta http-equiv="Content-Security-Policy"
-  content="default-src 'none';
-           base-uri 'self';
-           script-src 'self' 'nonce-EDNnf03nceIOfn39fn3e9h3sdfa' 
-                https://cdnjs.cloudflare.com 
-                https://d3js.org 
-                https://www.gstatic.com
-                https://www.googletagmanager.com
-https://cdn.jsdelivr.net;
-           style-src 'self' 'nonce-EDNnf03nceIOfn39fn3e9h3sdfa' 
-                https://cdnjs.cloudflare.com;
-           font-src 'self' 
-                https://cdnjs.cloudflare.com;
-           img-src 'self' data:;
-           connect-src 'self' 
-                https://startup-syria-backend.onrender.com 
-                https://www.google-analytics.com;
-           frame-src 'none';
-           object-src 'none';
-           form-action 'self';
-           upgrade-insecure-requests;">
+  content="default-src 'self';
+           script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://d3js.org https://www.gstatic.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com;
+           connect-src 'self' https://startup-syria-backend.onrender.com https://www.google-analytics.com;
+           style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+           font-src 'self' https://cdnjs.cloudflare.com;">
+
 
 
     <meta charset="UTF-8">
