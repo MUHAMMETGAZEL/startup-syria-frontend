@@ -41,39 +41,48 @@ const licenseStatus = document.getElementById('license-status');
 */
 
 
-async function activateLicense() {
+aasync function activateLicense() {
   const enteredKey = licenseInput.value.trim();
-  
+
   if (!enteredKey) {
     showNotification('خطأ في الإدخال', 'يرجى إدخال مفتاح الترخيص');
     return;
   }
 
   licenseStatus.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> جاري التحقق من الترخيص...</span>';
-  
+
   try {
-    // إرسال الطلب مع الاعتماد على الكوكيز
-    const response = await fetch('/api/auth/login', {
+    // إرسال الطلب مع تضمين الكوكي
+    const response = await fetch('https://startup-syria-backend.onrender.com/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ licenseKey: enteredKey }),
-      credentials: 'include'
+      credentials: 'include', // ⚠️ ضروري لإرسال واستلام الكوكي
+      body: JSON.stringify({ licenseKey: enteredKey })
     });
 
     if (!response.ok) {
       throw new Error('مفتاح الترخيص غير صالح');
     }
 
-    licenseActive = true;
-    licenseInput.value = '';
-    showNotification('تم التفعيل بنجاح!', 'تم تفعيل الترخيص بنجاح');
+    // بعد نجاح تسجيل الدخول، نتحقق من صلاحية الترخيص
+    const isAdmin = await verifyAdmin();
+
+    if (isAdmin) {
+      licenseActive = true;
+      licenseInput.value = '';
+      showNotification('تم التفعيل بنجاح', 'تم تفعيل الترخيص بنجاح');
+    } else {
+      throw new Error('ليس لديك صلاحية الوصول كمسؤول');
+    }
+
   } catch (error) {
     licenseActive = false;
-    showNotification('خطأ في الترخيص', error.message);
+    showNotification('فشل التفعيل', error.message);
   }
-  
-  updateLicenseUI();
+
+  updateLicenseUI(); // ✅ تحديث الواجهة
 }
+
 
 
 function isTokenExpired(token) {
@@ -110,15 +119,39 @@ function loadTokenState() {
   
   }
 
+async function verifyAdmin() {
+  try {
+    const response = await fetch('https://startup-syria-backend.onrender.com/api/auth/verify', {
+      credentials: 'include' // ⚠️ ضروري لقراءة الكوكي
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+    return data.isAdmin === true;
+  } catch (error) {
+    console.error('فشل التحقق من صلاحيات المسؤول:', error);
+    return false;
+  }
+}
+
 function updateLicenseUI() {
+  const licenseControl = document.querySelector('.license-control');
+
   if (licenseActive) {
     licenseStatus.innerHTML = '<span class="license-active"><i class="fas fa-check-circle"></i> الترخيص مفعل</span>';
+    licenseControl.style.display = 'none';
+
     document.getElementById('add-section').style.display = 'flex';
     document.getElementById('edit-section').style.display = 'flex';
     document.getElementById('view-suggestions').style.display = 'flex';
     document.getElementById('suggest-company').style.display = 'flex';
   } else {
     licenseStatus.innerHTML = '<span class="license-inactive"><i class="fas fa-times-circle"></i> الترخيص غير مفعل</span>';
+    licenseControl.style.display = 'flex';
+
     document.getElementById('add-section').style.display = 'none';
     document.getElementById('edit-section').style.display = 'none';
     document.getElementById('view-suggestions').style.display = 'none';
