@@ -5,7 +5,7 @@ const licenseStatus = document.getElementById('license-status');
 
   
   licenseStatus.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> جاري التحقق من الترخيص...</span>';
-  
+  /*
   async function activateLicense() {
     const enteredKey = licenseInput.value.trim();
     
@@ -38,6 +38,43 @@ const licenseStatus = document.getElementById('license-status');
     
     updateLicenseUI();
 }
+*/
+
+
+async function activateLicense() {
+  const enteredKey = licenseInput.value.trim();
+  
+  if (!enteredKey) {
+    showNotification('خطأ في الإدخال', 'يرجى إدخال مفتاح الترخيص');
+    return;
+  }
+
+  licenseStatus.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> جاري التحقق من الترخيص...</span>';
+  
+  try {
+    // إرسال الطلب مع الاعتماد على الكوكيز
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ licenseKey: enteredKey }),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('مفتاح الترخيص غير صالح');
+    }
+
+    licenseActive = true;
+    licenseInput.value = '';
+    showNotification('تم التفعيل بنجاح!', 'تم تفعيل الترخيص بنجاح');
+  } catch (error) {
+    licenseActive = false;
+    showNotification('خطأ في الترخيص', error.message);
+  }
+  
+  updateLicenseUI();
+}
+
 
 function isTokenExpired(token) {
   try {
@@ -72,7 +109,6 @@ function loadTokenState() {
     loadTokenState(); // 
   
   }
-
 
 function updateLicenseUI() {
   if (licenseActive) {
