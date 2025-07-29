@@ -1,4 +1,4 @@
-export const validateSuggestion = (data) => {
+/*export const validateSuggestion = (data) => {
   const errors = [];
   
   // التحقق من الاسم
@@ -30,5 +30,29 @@ function isValidUrl(url) {
     return true;
   } catch (e) {
     return false;
+  }
+}
+*/
+
+// تعقيم ومنع إدخال أي HTML أو JavaScript
+export function sanitizeInput(input) {
+  const temp = document.createElement('div');
+  temp.textContent = input;
+  return temp.innerHTML;
+}
+
+// التحقق من الحقول النصية (ليس فارغًا بعد التعقيم)
+export function validateText(input) {
+  const sanitized = sanitizeInput(input.trim());
+  return sanitized.length > 0 ? sanitized : null;
+}
+
+// التحقق من الروابط
+export function validateURL(url) {
+  try {
+    const parsed = new URL(url);
+    return ['http:', 'https:'].includes(parsed.protocol) ? url : null;
+  } catch {
+    return null;
   }
 }
