@@ -78,6 +78,15 @@ body {
     perspective: 1000px;
 }
 
+
+.hidden{
+
+display:none;
+
+}
+
+
+
 #concentric-map {
     width: 100%;
     height: 100%;
