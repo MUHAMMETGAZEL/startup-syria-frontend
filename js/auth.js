@@ -10,7 +10,7 @@ const licenseStatus = document.getElementById('license-status');
   const enteredKey = licenseInput.value.trim();
   
   try {
-    const response = await fetch(${ApiClient.baseUrl}/auth/login, {
+    const response = await fetch('${ApiClient.baseUrl}/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ licenseKey: enteredKey }),
