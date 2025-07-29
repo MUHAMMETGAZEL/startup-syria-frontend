@@ -86,8 +86,8 @@ function updateLicenseUI() {
 function setupLicenseListeners() {
   licenseBtn.addEventListener('click', activateLicense);
 }
-
-loadLicenseStatus();
+/*
+loadLicenseStatus();*/
 
 
 
