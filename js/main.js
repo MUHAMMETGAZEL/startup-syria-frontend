@@ -10,7 +10,7 @@ const MAX_NESTING_LEVEL = 1;
 
 async function initApp() {
 
- loadLicenseStatus();
+ licenseActive = false;
 
 
   await loadData();
