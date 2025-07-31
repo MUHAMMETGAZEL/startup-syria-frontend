@@ -38,6 +38,29 @@ const licenseStatus = document.getElementById('license-status');
 }
 
 
+// أضف هذه الدالة لمراقبة حالة التوكن
+function checkAuthStatus() {
+  setInterval(async () => {
+    try {
+      // طلب بسيط لفحص الصلاحية
+      const response = await fetch('https://startup-syria-backend.onrender.com/api/auth/check', {
+        credentials: 'include'
+      });
+      
+      licenseActive = response.ok;
+      updateLicenseUI();
+    } catch (error) {
+      licenseActive = false;
+      updateLicenseUI();
+    }
+  }, 5 * 60 * 1000); // كل 5 دقائق
+}
+
+// استدع الدالة عند التحميل
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuthStatus();
+});
+
 function updateLicenseUI() {
   if (licenseActive) {
     licenseStatus.innerHTML = '<span class="license-active"><i class="fas fa-check-circle"></i> الترخيص مفعل</span>';
