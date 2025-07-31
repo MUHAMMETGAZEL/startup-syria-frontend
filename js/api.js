@@ -1,5 +1,28 @@
 const ApiClient = {
     baseUrl: 'https://startup-syria-backend.onrender.com/api', 
+
+
+
+async function refreshToken() {
+  try {
+    const response = await fetch('https://startup-syria-backend.onrender.com/api/auth/refresh', {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('فشل في تجديد الجلسة');
+    }
+
+    licenseActive = true;
+    return true;
+  } catch (error) {
+    licenseActive = false;
+    updateLicenseUI();
+    return false;
+  }
+}
+
   async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
      
       const fullUrl = this.baseUrl + endpoint;
@@ -18,14 +41,20 @@ const ApiClient = {
       }
      
       
-    try {
-  const response = await fetch(fullUrl, options);
-  
-  if (response.status === 401) {
-    licenseActive = false;
-    updateLicenseUI();
-    throw new Error('انتهت صلاحية الجلسة');
-  }
+   try {
+    let response = await fetch(fullUrl, options);
+    
+    // إذا كان الخطأ 401، حاول تجديد التوكن
+    if (response.status === 401 && requiresAuth) {
+      const refreshed = await refreshToken();
+      
+      if (refreshed) {
+        // أعِد الطلب بعد التجديد
+        response = await fetch(fullUrl, options);
+      } else {
+        throw new Error('انتهت صلاحية الجلسة');
+      }
+    }
           
           if (!response.ok) {
               const errorData = await response.json();
