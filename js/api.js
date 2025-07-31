@@ -5,26 +5,33 @@ const ApiClient = {
       const fullUrl = this.baseUrl + endpoint;
       const headers = {};
       const options = {
-  method,
-  headers,
-  credentials: 'include', // إرسال الكوكيز تلقائياً
-  body: data ? JSON.stringify(data) : null
-};
+          method,
+          headers,
+          credentials: 'same-origin'
+
+      };
       
       if (data) {
           headers['Content-Type'] = 'application/json';
           options.body = JSON.stringify(data);
       }
       
-    
-    try {
-  const response = await fetch(fullUrl, options);
-  
-  if (response.status === 401) {
-    licenseActive = false;
-    updateLicenseUI();
-    throw new Error('انتهت صلاحية الجلسة');
-  }
+      if (requiresAuth) {
+          const token = localStorage.getItem('token');
+          if (!token) throw new Error('لم يتم العثور على رمز التخويل');
+          headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      try {
+          const response = await fetch(fullUrl, options);
+          
+         
+          if (response.status === 401) {
+              licenseActive = false;
+              updateLicenseUI();
+              throw new Error('انتهت صلاحية الجلسة، يرجى إعادة التفعيل');
+          }
+          
           if (!response.ok) {
               const errorData = await response.json();
               throw new Error(errorData.error || 'طلب فاشل');
