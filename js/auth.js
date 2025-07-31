@@ -16,27 +16,62 @@ const licenseStatus = document.getElementById('license-status');
    
     licenseStatus.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> جاري التحقق من الترخيص...</span>';
     
-   try {
-   const response = await fetch(`${ApiClient.baseUrl}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ licenseKey: enteredKey }),
-      credentials: 'include' // مهم لإرسال/استقبال الكوكيز
-    });
-
-    if (!response.ok) {
-      throw new Error('مفتاح الترخيص غير صحيح');
+    try {
+        const { token } = await ApiClient.login(enteredKey);
+        localStorage.setItem('token', token);
+        licenseActive = true;
+        licenseInput.value = '';
+        showNotification('تم التفعيل بنجاح!', 'تم تفعيل الترخيص بنجاح');
+    } catch (error) {
+        licenseActive = false;
+        
+       
+        let errorMessage = 'فشل في الاتصال بالخادم';
+        if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'تعذر الاتصال بالخادم. تأكد من تشغيل الخادم الخلفي';
+        } else {
+            errorMessage = error.message || 'مفتاح الترخيص غير صحيح';
+        }
+        
+        showNotification('خطأ في الترخيص', errorMessage);
     }
+    
+    updateLicenseUI();
+}
 
-    // تم تخزين التوكن آلياً في الكوكي
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    return payload.exp < now;
+  } catch (e) {
+    return true; 
+  }
+}
+
+
+
+
+function loadLicenseStatus() {
+  const token = localStorage.getItem('token');
+  if (token && !isTokenExpired(token)) {
     licenseActive = true;
-    showNotification('تم التفعيل بنجاح!', 'تم تفعيل الترخيص بنجاح');
-  } catch (error) {
-    // ... [معالجة الخطأ]
+  } else {
+    localStorage.removeItem('token');
+    licenseActive = false;
   }
   updateLicenseUI();
 }
+function loadTokenState() {
+    const token = localStorage.getItem('token');
+    licenseActive = !!token;
+    updateLicenseUI();
+  }
 
+  async function initApp() {
+    loadTokenState(); // 
+  
+  }
 
 
 function updateLicenseUI() {
@@ -60,7 +95,7 @@ function setupLicenseListeners() {
   licenseBtn.addEventListener('click', activateLicense);
 }
 
-
+loadLicenseStatus();
 
 
 
