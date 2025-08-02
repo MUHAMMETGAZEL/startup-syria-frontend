@@ -226,7 +226,7 @@ function drawMap() {
           .attr("fill", sector.color)
           .attr("stroke", "white")
         /*  .attr("stroke-width", 1)*/
-            .attr("stroke-width", 3);
+            .attr("stroke-width", 3)
           .attr("opacity", 0.8)
           .attr("class", "sector")
           .attr("data-sector", sector.id)
@@ -388,7 +388,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
           .attr("fill", "none")
           .attr("stroke", "#ffd166")
          /* .attr("stroke-width", 2)*/
-            .attr("stroke-width", 3);
+            .attr("stroke-width", 3)
           .attr("stroke-dasharray", "5,5")
           .attr("class", "ring-highlight")
           .attr("opacity", 0.7);
@@ -424,7 +424,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
           .attr("fill", sectorColor)
           .attr("stroke", "white")
        /*   .attr("stroke-width", 1)*/
-            .attr("stroke-width", 3);
+            .attr("stroke-width", 3)
           .attr("opacity", 0.8)
           .attr("class", "subsection-item")
           .attr("data-section", sectionIndex)
