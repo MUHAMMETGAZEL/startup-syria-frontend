@@ -265,7 +265,7 @@ function drawMap() {
       }
     });
   });
-
+}
   
   const innerLabels = [
     { 
