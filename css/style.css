@@ -100,7 +100,8 @@ display:none;
     transform: translate(-50%, -50%);
     width: 157px;
     height: 157px;
-    background: radial-gradient(circle, #4ca1af, #2c3e50);
+   /* background: radial-gradient(circle, #4ca1af, #2c3e50);*/
+     background: radial-gradient(circle, #9fffc3, #1b5e20);
     border-radius: 50%;
     display: flex;
     flex-direction: column;
