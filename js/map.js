@@ -16,7 +16,7 @@ const sectors = [
   { 
     id: 1, 
     name: "Ideation Support", 
-    color: "#008080", 
+    color: "#018985", 
     startAngle: 0, 
     endAngle: 2*Math.PI/5, 
     subsections: [
