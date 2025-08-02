@@ -143,7 +143,8 @@ function drawMap() {
           const path = svg.append("path")
             .attr("d", arcGenerator())
             .attr("transform", `translate(${centerX}, ${centerY})`)
-            .attr("fill", sector.color)
+           /* .attr("fill", sector.color)*/
+            .attr("fill", d3.color(sector.color).brighter(0.6))
             .attr("stroke", "white")
             .attr("stroke-width", 1)
             .attr("opacity", 0.8)
@@ -223,7 +224,8 @@ function drawMap() {
         const path = svg.append("path")
           .attr("d", arcGenerator())
           .attr("transform", `translate(${centerX}, ${centerY})`)
-          .attr("fill", sector.color)
+       /*   .attr("fill", sector.color)*/
+           .attr("fill", d3.color(sector.color).darker(0.7))
           .attr("stroke", "white")
         /*  .attr("stroke-width", 1)*/
             .attr("stroke-width", 3)
