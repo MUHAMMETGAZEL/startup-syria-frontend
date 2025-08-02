@@ -239,9 +239,33 @@ function drawMap() {
           .on("mouseout", function() {
             d3.select(this).attr("opacity", 0.8);
           });
+         /*رسم المسار النصي المائل*/
+        const arcPathId = `arc-path-${sector.id}`;
+        svg.append("path")
+          .attr("id", arcPathId)
+          .attr("d", d3.arc()
+            .innerRadius((ring.innerRadius + ring.outerRadius) / 2)
+            .outerRadius((ring.innerRadius + ring.outerRadius) / 2)
+            .startAngle(startAngle)
+            .endAngle(endAngle)()
+          )
+          .attr("fill", "none")
+          .attr("stroke", "none");
+
+        /* النص المائل داخل الحلقة الداخلية*/
+        svg.append("text")
+          .append("textPath")
+          .attr("xlink:href", `#${arcPathId}`)
+          .attr("startOffset", "50%")
+          .style("text-anchor", "middle")
+          .style("font-size", "14px")
+          .style("font-weight", "bold")
+          .style("fill", "#fff")
+          .text(sector.name);
       }
     });
   });
+
   
   const innerLabels = [
     { 
