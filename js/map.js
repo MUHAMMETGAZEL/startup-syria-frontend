@@ -147,7 +147,7 @@ function drawMap() {
             .attr("fill", d3.color(sector.color).brighter(0.6))
             .attr("stroke", "white")
          /*   .attr("stroke-width", 1) */
-             .attr("stroke-width", 6)
+             .attr("stroke-width",4)
             .attr("opacity", 0.8)
             .attr("class", "subsection")
             .attr("data-sector", sector.id)
@@ -229,7 +229,7 @@ function drawMap() {
            .attr("fill", d3.color(sector.color).darker(0.7))
           .attr("stroke", "white")
         /*  .attr("stroke-width", 1)*/
-            .attr("stroke-width", 5)
+            .attr("stroke-width",5)
           .attr("opacity", 0.8)
           .attr("class", "sector")
           .attr("data-sector", sector.id)
@@ -427,7 +427,7 @@ function createNewCircleMap(subsectionName, sectorColor) {
           .attr("fill", sectorColor)
           .attr("stroke", "white")
        /*   .attr("stroke-width", 1)*/
-            .attr("stroke-width", 3)
+            .attr("stroke-width", 2)
           .attr("opacity", 0.8)
           .attr("class", "subsection-item")
           .attr("data-section", sectionIndex)
