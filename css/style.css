@@ -103,7 +103,7 @@ display:none;
     width: 157px;
     height: 157px;
    /* background: radial-gradient(circle, #4ca1af, #2c3e50);*/
-    background: radial-gradient(circle, #b2f7b8, #34a853); /* أخضر فاتح */
+    background:#2e4456;
     border: 12px solid white  !important;
     border-radius: 50%;
     display: flex;
@@ -135,6 +135,7 @@ display:none;
 }
 
 .controls {
+    background:linear-gradient(135deg, #4ca1af, #2c3e50);
     display: flex;
     justify-content: center;
     gap: 15px;
@@ -143,8 +144,9 @@ display:none;
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #4ca1af;
+    margin: 4px;
+    background: rgb(255 255 255 / 20%);
+    border: 1px solid  #44899800;
     color: #a8dadc;
     padding: 10px 20px;
     border-radius: 30px;
@@ -224,6 +226,7 @@ display:none;
 }
 
 .rotation-controls {
+    margin:4px;
     display: flex;
     gap: 10px;
 }
@@ -689,8 +692,9 @@ display:none;
 
 /* زر جديد في التحكمات */
 .control-btn.suggest-btn {
-    background: rgba(6, 214, 160, 0.2);
-    border-color: #06d6a0;
+    margin: 4px;
+    background: rgb(255 255 255 / 20%);
+    border-color: #44899800;
 }
 
 .control-btn.suggest-btn:hover {
@@ -698,7 +702,7 @@ display:none;
 }
 
 .control-btn.suggest-btn i {
-    color: #06d6a0;
+    color: #dce894;
 }
 
 /* تأثيرات للنص القابل للنقر */
