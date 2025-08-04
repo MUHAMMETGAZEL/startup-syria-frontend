@@ -242,7 +242,7 @@ function drawMap() {
       }
     });
   });
-  
+  /*
   const innerLabels = [
     { 
       lines: ["Regulations and", "Government Support"], 
@@ -270,7 +270,7 @@ function drawMap() {
       angle: Math.PI * 3.3 + rotationAngle
     }
   ];
-  /*
+
   const innerRadius = 100;
   innerLabels.forEach((label) => {
     const x = centerX + innerRadius * Math.cos(label.angle);
@@ -309,36 +309,70 @@ function drawMap() {
       }
     });
   }); */
-      const innerRadius = 100;
-    
-    innerLabels.forEach((label) => {
-      const x = centerX + innerRadius * Math.cos(label.angle);
-      const y = centerY + innerRadius * Math.sin(label.angle);
-    
-      // زاوية الدوران حسب موقع العنصر على الدائرة
-      const angleDegrees = (label.angle * 180 / Math.PI);
-    
-      // مجموعة g لحمل النصوص
-      const g = svg.append("g")
-        .attr("transform", `translate(${x}, ${y}) rotate(${angleDegrees})`)
-        .attr("class", "inner-label");
-    
-      const lineHeight = 15;
-      const startY = -((label.lines.length - 1) * lineHeight) / 2;
-    
-      label.lines.forEach((line, i) => {
-        g.append("text")
-          .attr("x", 0)
-          .attr("y", startY + i * lineHeight)
-          .attr("text-anchor", "middle")
-          .attr("dy", "0.35em")
-          .attr("fill", label.color)
-          .attr("font-size", line === "Funding" ? "15px" : "13px")
-          .attr("font-weight", "bold")
-          .text(line);
-      });
-    });
+  const innerLabels = [
+  { 
+    lines: ["Regulations and", "Government Support"], 
+    color: "#ffff",
+    angle: Math.PI * 0.5 + rotationAngle
+  },
+  { 
+    lines: ["Ideation Support"],
+    color: "#ffff",
+    angle: Math.PI * 1.7 + rotationAngle
+  },
+  { 
+    lines: ["Networking and", "Cultures"],
+    color: "#ffff",
+    angle: Math.PI * 0.9 + rotationAngle
+  },
+  { 
+    lines: ["Operation, Growth", "and Markets"],
+    color: "#ffff",
+    angle: Math.PI * 0.1 + rotationAngle
+  },
+  { 
+    lines: ["Funding"],
+    color: "#ffff",
+    angle: Math.PI * 3.3 + rotationAngle
+  }
+];
 
+const arcTextRadius = 115; // المسافة بين النص والمركز — عدّلها حسب الحاجة
+
+innerLabels.forEach((label, i) => {
+  const startAngle = label.angle - 0.25;
+  const endAngle = label.angle + 0.25;
+
+  // إنشاء قوس النص
+  const arcPath = d3.arc()
+    .innerRadius(arcTextRadius)
+    .outerRadius(arcTextRadius)
+    .startAngle(startAngle)
+    .endAngle(endAngle);
+
+  const pathId = `inner-arc-path-${i}`;
+
+  // إضافة المسار إلى الخريطة (غير مرئي)
+  svg.append("path")
+    .attr("id", pathId)
+    .attr("d", arcPath())
+    .attr("fill", "none")
+    .attr("stroke", "none")
+    .attr("transform", `translate(${centerX}, ${centerY})`);
+
+  // إضافة النص على المسار المنحني
+  const textGroup = svg.append("text")
+    .attr("fill", label.color)
+    .attr("font-size", "13px")
+    .attr("font-weight", "bold");
+
+  textGroup.append("textPath")
+    .attr("href", `#${pathId}`)
+    .attr("startOffset", "50%")
+    .attr("text-anchor", "middle")
+    .text(label.lines.join(" "));
+});
+  
 }
 
 // إنشاء خريطة جديدة للقسم الفرعي
