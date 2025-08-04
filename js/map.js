@@ -270,7 +270,7 @@ function drawMap() {
       angle: Math.PI * 3.3 + rotationAngle
     }
   ];
-
+  
   const innerRadius = 100;
   innerLabels.forEach((label) => {
     const x = centerX + innerRadius * Math.cos(label.angle);
@@ -309,6 +309,33 @@ function drawMap() {
       }
     });
   }); */
+  const innerLabels = [
+    { 
+      lines: ["Regulations and", "Government Support"], 
+      color: "#ffff",
+      angle: Math.PI * 0.5 + rotationAngle
+    },
+    { 
+      lines: ["Ideation Support"],
+      color: "#ffff",
+      angle: Math.PI * 1.7 + rotationAngle
+    },
+    { 
+      lines: ["Networking and", "Cultures"],
+      color: "#ffff",
+      angle: Math.PI * 0.9 + rotationAngle
+    },
+    { 
+      lines: ["Operation, Growth", "and Markets"],
+      color: "#ffff",
+      angle: Math.PI * 0.1 + rotationAngle
+    },
+    { 
+      lines: ["Funding"],
+      color: "#ffff",
+      angle: Math.PI * 3.3 + rotationAngle
+    }
+  ];
  const arcTextRadius = 115;
 
 innerLabels.forEach((label, i) => {
