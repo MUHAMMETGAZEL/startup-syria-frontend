@@ -309,68 +309,46 @@ function drawMap() {
       }
     });
   }); */
-  const innerLabels = [
-  { 
-    lines: ["Regulations and", "Government Support"], 
-    color: "#ffff",
-    angle: Math.PI * 0.5 + rotationAngle
-  },
-  { 
-    lines: ["Ideation Support"],
-    color: "#ffff",
-    angle: Math.PI * 1.7 + rotationAngle
-  },
-  { 
-    lines: ["Networking and", "Cultures"],
-    color: "#ffff",
-    angle: Math.PI * 0.9 + rotationAngle
-  },
-  { 
-    lines: ["Operation, Growth", "and Markets"],
-    color: "#ffff",
-    angle: Math.PI * 0.1 + rotationAngle
-  },
-  { 
-    lines: ["Funding"],
-    color: "#ffff",
-    angle: Math.PI * 3.3 + rotationAngle
-  }
-];
-
-const arcTextRadius = 115; // المسافة بين النص والمركز — عدّلها حسب الحاجة
+ const arcTextRadius = 115;
 
 innerLabels.forEach((label, i) => {
-  const startAngle = label.angle - 0.25;
-  const endAngle = label.angle + 0.25;
+  const labelText = label.lines.join(" ");
 
-  // إنشاء قوس النص
+  let startAngle = label.angle - 0.3;
+  let endAngle = label.angle + 0.3;
+
+  // إذا كانت الزاوية على الجانب الأيسر من الدائرة، نعكس الاتجاه
+  if ((label.angle * 180 / Math.PI) > 90 && (label.angle * 180 / Math.PI) < 270) {
+    const temp = startAngle;
+    startAngle = endAngle;
+    endAngle = temp;
+  }
+
   const arcPath = d3.arc()
     .innerRadius(arcTextRadius)
     .outerRadius(arcTextRadius)
     .startAngle(startAngle)
     .endAngle(endAngle);
 
-  const pathId = `inner-arc-path-${i}`;
+  const pathId = inner-arc-path-${i};
 
-  // إضافة المسار إلى الخريطة (غير مرئي)
   svg.append("path")
     .attr("id", pathId)
     .attr("d", arcPath())
     .attr("fill", "none")
     .attr("stroke", "none")
-    .attr("transform", `translate(${centerX}, ${centerY})`);
+    .attr("transform", translate(${centerX}, ${centerY}));
 
-  // إضافة النص على المسار المنحني
   const textGroup = svg.append("text")
     .attr("fill", label.color)
     .attr("font-size", "13px")
     .attr("font-weight", "bold");
 
   textGroup.append("textPath")
-    .attr("href", `#${pathId}`)
+    .attr("href", #${pathId})
     .attr("startOffset", "50%")
     .attr("text-anchor", "middle")
-    .text(label.lines.join(" "));
+    .text(labelText);
 });
   
 }
