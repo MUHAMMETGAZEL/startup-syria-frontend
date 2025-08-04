@@ -310,72 +310,46 @@ function drawMap() {
     });
   }); */
   const innerLabels = [
-    { 
-      lines: ["Regulations and", "Government Support"], 
-      color: "#ffff",
-      angle: Math.PI * 0.5 + rotationAngle
-    },
-    { 
-      lines: ["Ideation Support"],
-      color: "#ffff",
-      angle: Math.PI * 1.7 + rotationAngle
-    },
-    { 
-      lines: ["Networking and", "Cultures"],
-      color: "#ffff",
-      angle: Math.PI * 0.9 + rotationAngle
-    },
-    { 
-      lines: ["Operation, Growth", "and Markets"],
-      color: "#ffff",
-      angle: Math.PI * 0.1 + rotationAngle
-    },
-    { 
-      lines: ["Funding"],
-      color: "#ffff",
-      angle: Math.PI * 3.3 + rotationAngle
-    }
-  ];
- const arcTextRadius = 115;
+  { text: "Regulations and Government Support", angle: Math.PI * 0.5 + rotationAngle },
+  { text: "Ideation Support", angle: Math.PI * 1.7 + rotationAngle },
+  { text: "Networking and Cultures", angle: Math.PI * 0.9 + rotationAngle },
+  { text: "Operation, Growth and Markets", angle: Math.PI * 0.1 + rotationAngle },
+  { text: "Funding", angle: Math.PI * 3.3 + rotationAngle }
+];
+
+const arcTextRadius = 115;
 
 innerLabels.forEach((label, i) => {
-  const labelText = label.lines.join(" ");
+  const arcLength = 0.5; // زاوية عرض القوس
+  const startAngle = label.angle - arcLength / 2;
+  const endAngle = label.angle + arcLength / 2;
 
-  let startAngle = label.angle - 0.3;
-  let endAngle = label.angle + 0.3;
+  const pathId = `inner-label-path-${i}`;
 
-  // إذا كانت الزاوية على الجانب الأيسر من الدائرة، نعكس الاتجاه
-  if ((label.angle * 180 / Math.PI) > 90 && (label.angle * 180 / Math.PI) < 270) {
-    const temp = startAngle;
-    startAngle = endAngle;
-    endAngle = temp;
-  }
-
+  // إذا كانت الزاوية بين 90° و 270° نقلب القوس لتفادي انقلاب النص
+  const shouldFlip = (label.angle * 180 / Math.PI) > 90 && (label.angle * 180 / Math.PI) < 270;
   const arcPath = d3.arc()
     .innerRadius(arcTextRadius)
     .outerRadius(arcTextRadius)
-    .startAngle(startAngle)
-    .endAngle(endAngle);
-
-  const pathId = inner-arc-path-${i};
+    .startAngle(shouldFlip ? endAngle : startAngle)
+    .endAngle(shouldFlip ? startAngle : endAngle);
 
   svg.append("path")
     .attr("id", pathId)
     .attr("d", arcPath())
     .attr("fill", "none")
     .attr("stroke", "none")
-    .attr("transform", translate(${centerX}, ${centerY}));
+    .attr("transform", `translate(${centerX}, ${centerY})`);
 
-  const textGroup = svg.append("text")
-    .attr("fill", label.color)
-    .attr("font-size", "13px")
-    .attr("font-weight", "bold");
-
-  textGroup.append("textPath")
-    .attr("href", #${pathId})
+  svg.append("text")
+    .append("textPath")
+    .attr("href", `#${pathId}`)
     .attr("startOffset", "50%")
     .attr("text-anchor", "middle")
-    .text(labelText);
+    .attr("font-size", "13px")
+    .attr("font-weight", "bold")
+    .attr("fill", "#ffffff")
+    .text(label.text);
 });
   
 }
