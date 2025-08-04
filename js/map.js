@@ -270,7 +270,7 @@ function drawMap() {
       angle: Math.PI * 3.3 + rotationAngle
     }
   ];
-  
+  /*
   const innerRadius = 100;
   innerLabels.forEach((label) => {
     const x = centerX + innerRadius * Math.cos(label.angle);
@@ -308,7 +308,37 @@ function drawMap() {
           .text(line);
       }
     });
-  });
+  }); */
+      const innerRadius = 100;
+    
+    innerLabels.forEach((label) => {
+      const x = centerX + innerRadius * Math.cos(label.angle);
+      const y = centerY + innerRadius * Math.sin(label.angle);
+    
+      // زاوية الدوران حسب موقع العنصر على الدائرة
+      const angleDegrees = (label.angle * 180 / Math.PI);
+    
+      // مجموعة g لحمل النصوص
+      const g = svg.append("g")
+        .attr("transform", `translate(${x}, ${y}) rotate(${angleDegrees})`)
+        .attr("class", "inner-label");
+    
+      const lineHeight = 15;
+      const startY = -((label.lines.length - 1) * lineHeight) / 2;
+    
+      label.lines.forEach((line, i) => {
+        g.append("text")
+          .attr("x", 0)
+          .attr("y", startY + i * lineHeight)
+          .attr("text-anchor", "middle")
+          .attr("dy", "0.35em")
+          .attr("fill", label.color)
+          .attr("font-size", line === "Funding" ? "15px" : "13px")
+          .attr("font-weight", "bold")
+          .text(line);
+      });
+    });
+
 }
 
 // إنشاء خريطة جديدة للقسم الفرعي
