@@ -242,7 +242,7 @@ function drawMap() {
       }
     });
   });
-  /*
+ 
   const innerLabels = [
     { 
       lines: ["Regulations and", "Government Support"], 
@@ -308,92 +308,7 @@ function drawMap() {
           .text(line);
       }
     });
-  }); */
-const innerLabels = [
-    { 
-        text: "Regulations and Government Support", 
-        color: "#ffff",
-        angle: Math.PI * 0.5 + rotationAngle,
-        radius: 100,
-        fontSize: "13px"
-    },
-    { 
-        text: "Ideation Support",
-        color: "#ffff",
-        angle: Math.PI * 1.7 + rotationAngle,
-        radius: 100,
-        fontSize: "13px"
-    },
-    { 
-        text: "Networking and Cultures",
-        color: "#ffff",
-        angle: Math.PI * 0.9 + rotationAngle,
-        radius: 100,
-        fontSize: "13px"
-    },
-    { 
-        text: "Operation, Growth and Markets",
-        color: "#ffff",
-        angle: Math.PI * 0.1 + rotationAngle,
-        radius: 100,
-        fontSize: "13px"
-    },
-    { 
-        text: "Funding",
-        color: "#ffff",
-        angle: Math.PI * 3.3 + rotationAngle,
-        radius: 100,
-        fontSize: "15px"
-    }
-];
-
-innerLabels.forEach((label) => {
-    const arcLength = label.text.length * 7;
-    let angle = label.angle;
-
-    // نحدد إذا كنا بحاجة لقلب الاتجاه (إذا كان في النصف السفلي من الدائرة)
-    let shouldFlip = angle > Math.PI / 2 && angle < 3 * Math.PI / 2;
-
-    // إذا كان يجب قلب النص، نزيد الزاوية 180 درجة
-    if (shouldFlip) {
-        angle += Math.PI;
-    }
-
-    const startAngle = angle - (arcLength / 2) / label.radius;
-    const endAngle = angle + (arcLength / 2) / label.radius;
-
-    const pathId = arc-path-${label.text.replace(/\s+/g, '-')};
-
-    svg.append("path")
-        .attr("id", pathId)
-        .attr("d", d3.arc()
-            .innerRadius(label.radius)
-            .outerRadius(label.radius)
-            .startAngle(startAngle)
-            .endAngle(endAngle))
-        .attr("transform", translate(${centerX}, ${centerY}))
-        .style("fill", "none")
-        .style("visibility", "hidden");
-
-    const text = svg.append("text")
-        .attr("dy", -5);
-
-    const textPath = text.append("textPath")
-        .attr("xlink:href", #${pathId})
-        .attr("startOffset", "50%")
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .style("font-size", label.fontSize)
-        .style("font-weight", "bold")
-        .style("fill", label.color)
-        .style("letter-spacing", "0.5px")
-        .text(label.text);
-
-    // إذا كان النص مقلوب، نقوم بقلبه مرة أخرى داخل text
-    if (shouldFlip) {
-        text.attr("transform", rotate(180, ${centerX}, ${centerY}));
-    }
-});
+  }); 
 }
 
 // إنشاء خريطة جديدة للقسم الفرعي
