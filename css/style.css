@@ -425,17 +425,31 @@ display:none;
     text-shadow: 0 0 2px rgba(0,0,0,0.8);
 }
 
-.inner-label text {
+/* أنماط جديدة للنصوص القوسية */
+textPath {
+    dominant-baseline: middle;
+    text-anchor: middle;
     font-size: 13px;
     font-weight: bold;
     fill: #ffffff;
-    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    text-shadow: 0 0 3px rgba(0,0,0,0.8);
     letter-spacing: 0.5px;
 }
+textPath {
+    text-rendering: geometricPrecision;
+}
+/* تصحيح الانعكاس التلقائي */
+textPath {
+    unicode-bidi: plaintext;
+}
+text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-.inner-label text[font-size="15px"] {
+/* نمط خاص لكلمة "Funding" */
+textPath[font-size="15px"] {
     font-size: 15px;
-}}
+}
 
 .inner-label {
     position: absolute;
