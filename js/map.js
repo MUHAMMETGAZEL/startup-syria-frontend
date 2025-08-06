@@ -309,54 +309,69 @@ function drawMap() {
       }
     });
   }); */
+// داخل دالة drawMap()، استبدل جزء إنشاء النصوص الداخلية بهذا الكود:
 const innerLabels = [
-  { text: "Regulations and Government Support", angle: Math.PI * 0.5 + rotationAngle },
-  { text: "Ideation Support", angle: Math.PI * 1.7 + rotationAngle },
-  { text: "Networking and Cultures", angle: Math.PI * 0.9 + rotationAngle },
-  { text: "Operation, Growth and Markets", angle: Math.PI * 0.1 + rotationAngle },
-  { text: "Funding", angle: Math.PI * 3.3 + rotationAngle }
+    { 
+        text: "Regulations and\nGovernment Support", 
+        color: "#ffff",
+        angle: Math.PI * 0.5 + rotationAngle
+    },
+    { 
+        text: "Ideation Support",
+        color: "#ffff",
+        angle: Math.PI * 1.7 + rotationAngle
+    },
+    { 
+        text: "Networking and\nCultures",
+        color: "#ffff",
+        angle: Math.PI * 0.9 + rotationAngle
+    },
+    { 
+        text: "Operation, Growth\nand Markets",
+        color: "#ffff",
+        angle: Math.PI * 0.1 + rotationAngle
+    },
+    { 
+        text: "Funding",
+        color: "#ffff",
+        angle: Math.PI * 3.3 + rotationAngle
+    }
 ];
 
-const arcTextRadius = 100; // عدّل المسافة هنا حسب الحاجة
-const arcLength = 0.45;
-
-innerLabels.forEach((label, i) => {
-  const angleDeg = label.angle * 180 / Math.PI;
-  const shouldFlip = angleDeg > 90 && angleDeg < 270;
-
-  let startAngle = label.angle - arcLength / 2;
-  let endAngle = label.angle + arcLength / 2;
-
-  if (shouldFlip) {
-    [startAngle, endAngle] = [endAngle, startAngle]; // قلب الاتجاه بدون scale
-  }
-
-  const arcPath = d3.arc()
-    .innerRadius(arcTextRadius)
-    .outerRadius(arcTextRadius)
-    .startAngle(startAngle)
-    .endAngle(endAngle);
-
-  const pathId = `inner-label-path-${i}`;
-
-  svg.append("path")
-    .attr("id", pathId)
-    .attr("d", arcPath())
-    .attr("fill", "none")
-    .attr("stroke", "none")
-    .attr("transform", `translate(${centerX}, ${centerY})`);
-
-  svg.append("text")
-    .append("textPath")
-    .attr("href", `#${pathId}`)
-    .attr("startOffset", "50%")
-    .attr("text-anchor", "middle")
-    .attr("font-size", "13px")
-    .attr("font-weight", "bold")
-    .attr("fill", "#ffffff")
-    .text(label.text);
+const innerRadius = 100;
+innerLabels.forEach((label) => {
+    const lines = label.text.split('\n');
+    const x = centerX + innerRadius * Math.cos(label.angle);
+    const y = centerY + innerRadius * Math.sin(label.angle);
+    
+    // إنشاء مسار نصي منحني
+    const textPath = svg.append("path")
+        .attr("id", `text-path-${label.angle}`)
+        .attr("d", d3.arc()
+            .innerRadius(innerRadius - 10)
+            .outerRadius(innerRadius - 10)
+            .startAngle(label.angle - 0.2)
+            .endAngle(label.angle + 0.2)
+            .cornerRadius(0)())
+        .attr("transform", `translate(${centerX}, ${centerY})`)
+        .style("fill", "none");
+    
+    // إضافة النص على المسار المنحني
+    const text = svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "-0.5em")
+        .style("font-size", "13px")
+        .style("font-weight", "bold")
+        .style("fill", label.color);
+    
+    lines.forEach((line, i) => {
+        text.append("textPath")
+            .attr("xlink:href", `#text-path-${label.angle}`)
+            .attr("startOffset", "50%")
+            .attr("dy", i * 15)
+            .text(line);
+    });
 });
-
   
 }
 
