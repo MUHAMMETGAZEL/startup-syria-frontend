@@ -351,11 +351,12 @@ innerLabels.forEach((label) => {
     const arcLength = label.text.length * 7;
     let angle = label.angle;
 
-    // تصحيح الاتجاه إذا كانت الزاوية في النصف السفلي
-    let flipped = false;
-    if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2) {
-        angle += Math.PI; // قلب الزاوية
-        flipped = true;
+    // نحدد إذا كنا بحاجة لقلب الاتجاه (إذا كان في النصف السفلي من الدائرة)
+    let shouldFlip = angle > Math.PI / 2 && angle < 3 * Math.PI / 2;
+
+    // إذا كان يجب قلب النص، نزيد الزاوية 180 درجة
+    if (shouldFlip) {
+        angle += Math.PI;
     }
 
     const startAngle = angle - (arcLength / 2) / label.radius;
@@ -374,9 +375,10 @@ innerLabels.forEach((label) => {
         .style("fill", "none")
         .style("visibility", "hidden");
 
-    svg.append("text")
-        .attr("dy", -5)
-        .append("textPath")
+    const text = svg.append("text")
+        .attr("dy", -5);
+
+    const textPath = text.append("textPath")
         .attr("xlink:href", #${pathId})
         .attr("startOffset", "50%")
         .attr("text-anchor", "middle")
@@ -385,8 +387,12 @@ innerLabels.forEach((label) => {
         .style("font-weight", "bold")
         .style("fill", label.color)
         .style("letter-spacing", "0.5px")
-        .attr("transform", flipped ? "rotate(180)" : null)  // قلب النص إذا لزم
         .text(label.text);
+
+    // إذا كان النص مقلوب، نقوم بقلبه مرة أخرى داخل text
+    if (shouldFlip) {
+        text.attr("transform", rotate(180, ${centerX}, ${centerY}));
+    }
 });
 }
 
