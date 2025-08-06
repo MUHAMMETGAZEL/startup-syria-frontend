@@ -309,7 +309,7 @@ function drawMap() {
       }
     });
   }); */
-  const innerLabels = [
+const innerLabels = [
   { text: "Regulations and Government Support", angle: Math.PI * 0.5 + rotationAngle },
   { text: "Ideation Support", angle: Math.PI * 1.7 + rotationAngle },
   { text: "Networking and Cultures", angle: Math.PI * 0.9 + rotationAngle },
@@ -317,21 +317,23 @@ function drawMap() {
   { text: "Funding", angle: Math.PI * 3.3 + rotationAngle }
 ];
 
-// المسافة داخل الحلقة الداخلية بدقة
-const arcTextRadius = 87; // كانت 115 (بعيدة)، 87 هي الأنسب بصريًا
-const arcLength = 0.45; // زاوية عرض القوس — كلما زادت زاد انحناء النص
+const arcTextRadius = 87;
+const arcLength = 0.45;
 
 innerLabels.forEach((label, i) => {
+  const angleDeg = label.angle * 180 / Math.PI;
+  const shouldFlip = angleDeg > 90 && angleDeg < 270;
+
   const startAngle = label.angle - arcLength / 2;
   const endAngle = label.angle + arcLength / 2;
-
-  const pathId = `inner-label-path-${i}`;
 
   const arcPath = d3.arc()
     .innerRadius(arcTextRadius)
     .outerRadius(arcTextRadius)
-    .startAngle(startAngle)
-    .endAngle(endAngle);
+    .startAngle(shouldFlip ? endAngle : startAngle)
+    .endAngle(shouldFlip ? startAngle : endAngle);
+
+  const pathId = `inner-label-path-${i}`;
 
   svg.append("path")
     .attr("id", pathId)
@@ -340,7 +342,7 @@ innerLabels.forEach((label, i) => {
     .attr("stroke", "none")
     .attr("transform", `translate(${centerX}, ${centerY})`);
 
-  svg.append("text")
+  const text = svg.append("text")
     .append("textPath")
     .attr("href", `#${pathId}`)
     .attr("startOffset", "50%")
@@ -349,8 +351,12 @@ innerLabels.forEach((label, i) => {
     .attr("font-weight", "bold")
     .attr("fill", "#ffffff")
     .text(label.text);
-});
 
+  if (shouldFlip) {
+    text.attr("dominant-baseline", "middle")
+        .attr("transform", "scale(-1, -1)"); // لقلب النص فقط إذا لزم
+  }
+});
   
 }
 
