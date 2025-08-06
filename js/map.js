@@ -317,21 +317,25 @@ const innerLabels = [
   { text: "Funding", angle: Math.PI * 3.3 + rotationAngle }
 ];
 
-const arcTextRadius = 87;
+const arcTextRadius = 100; // عدّل المسافة هنا حسب الحاجة
 const arcLength = 0.45;
 
 innerLabels.forEach((label, i) => {
   const angleDeg = label.angle * 180 / Math.PI;
   const shouldFlip = angleDeg > 90 && angleDeg < 270;
 
-  const startAngle = label.angle - arcLength / 2;
-  const endAngle = label.angle + arcLength / 2;
+  let startAngle = label.angle - arcLength / 2;
+  let endAngle = label.angle + arcLength / 2;
+
+  if (shouldFlip) {
+    [startAngle, endAngle] = [endAngle, startAngle]; // قلب الاتجاه بدون scale
+  }
 
   const arcPath = d3.arc()
     .innerRadius(arcTextRadius)
     .outerRadius(arcTextRadius)
-    .startAngle(shouldFlip ? endAngle : startAngle)
-    .endAngle(shouldFlip ? startAngle : endAngle);
+    .startAngle(startAngle)
+    .endAngle(endAngle);
 
   const pathId = `inner-label-path-${i}`;
 
@@ -342,7 +346,7 @@ innerLabels.forEach((label, i) => {
     .attr("stroke", "none")
     .attr("transform", `translate(${centerX}, ${centerY})`);
 
-  const text = svg.append("text")
+  svg.append("text")
     .append("textPath")
     .attr("href", `#${pathId}`)
     .attr("startOffset", "50%")
@@ -351,12 +355,8 @@ innerLabels.forEach((label, i) => {
     .attr("font-weight", "bold")
     .attr("fill", "#ffffff")
     .text(label.text);
-
-  if (shouldFlip) {
-    text.attr("dominant-baseline", "middle")
-        .attr("transform", "scale(-1, -1)"); // لقلب النص فقط إذا لزم
-  }
 });
+
   
 }
 
