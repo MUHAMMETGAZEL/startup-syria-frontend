@@ -311,72 +311,56 @@ function drawMap() {
   }); */
 const innerLabels = [
     { 
-        text: "Regulations and\nGovernment Support", 
+        text: "Regulations and Government Support", 
         color: "#ffff",
-        angle: Math.PI * 0.5 + rotationAngle,
-        radius: 100
+        angle: Math.PI * 0.5 + rotationAngle
     },
     { 
         text: "Ideation Support",
         color: "#ffff",
-        angle: Math.PI * 1.7 + rotationAngle,
-        radius: 100
+        angle: Math.PI * 1.7 + rotationAngle
     },
     { 
-        text: "Networking and\nCultures",
+        text: "Networking and Cultures",
         color: "#ffff",
-        angle: Math.PI * 0.9 + rotationAngle,
-        radius: 100
+        angle: Math.PI * 0.9 + rotationAngle
     },
     { 
-        text: "Operation, Growth\nand Markets",
+        text: "Operation, Growth and Markets",
         color: "#ffff",
-        angle: Math.PI * 0.1 + rotationAngle,
-        radius: 100
+        angle: Math.PI * 0.1 + rotationAngle
     },
     { 
         text: "Funding",
         color: "#ffff",
-        angle: Math.PI * 3.3 + rotationAngle,
-        radius: 100
+        angle: Math.PI * 3.3 + rotationAngle
     }
 ];
 
 innerLabels.forEach((label) => {
-    const lines = label.text.split('\n');
-    const x = centerX + label.radius * Math.cos(label.angle);
-    const y = centerY + label.radius * Math.sin(label.angle);
-    
-    let rotation = (label.angle * 180 / Math.PI) + 90;
-    if (rotation > 90 && rotation < 270) {
-        rotation += 180;
-    }
-    
-    const g = svg.append("g")
-        .attr("transform", `translate(${x}, ${y}) rotate(${rotation})`)
-        .attr("class", "inner-label");
-    
-    const lineHeight = 15;
-    const startY = -((lines.length - 1) * lineHeight) / 2;
-    
-    lines.forEach((line, i) => {
-        // إنشاء تأثير القوس باستخدام تحويل SVG
-        const textLength = line.length;
-        const curvature = textLength * 0.5; // ضبط درجة الانحناء
-        
-        g.append("text")
-            .attr("x", 0)
-            .attr("y", startY + i * lineHeight)
-            .attr("text-anchor", "middle")
-            .attr("dy", "0.35em")
-            .attr("fill", label.color)
-            .attr("font-size", label.text === "Funding" ? "15px" : "13px")
-            .attr("font-weight", "bold")
-            .attr("transform", `rotate(${-rotation} 0 0)`)
-            .attr("textLength", textLength * 8) // ضبط طول النص
-            .attr("lengthAdjust", "spacingAndGlyphs")
-            .text(line);
-    });
+    // إنشاء مسار دائري للنص
+    const path = svg.append("path")
+        .attr("id", `label-path-${label.angle}`)
+        .attr("d", d3.arc()
+            .innerRadius(90)
+            .outerRadius(90)
+            .startAngle(label.angle - 0.3)  // ضبط عرض القوس
+            .endAngle(label.angle + 0.3)   // ضبط عرض القوس
+            .cornerRadius(0)())
+        .attr("transform", `translate(${centerX}, ${centerY})`)
+        .style("fill", "none");
+
+    // إضافة النص على المسار
+    svg.append("text")
+        .append("textPath")
+        .attr("xlink:href", `#label-path-${label.angle}`)
+        .attr("startOffset", "50%")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", label.color)
+        .attr("font-size", label.text === "Funding" ? "15px" : "13px")
+        .attr("font-weight", "bold")
+        .text(label.text);
 });
   
 }
