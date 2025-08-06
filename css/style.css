@@ -425,40 +425,6 @@ display:none;
     text-shadow: 0 0 2px rgba(0,0,0,0.8);
 }
 
-
-/* نصوص الأقواس */
-textPath {
-    font-size: 13px;
-    font-weight: bold;
-    fill: #ffffff;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8); /* تحسين الرؤية على الخلفيات الملونة */
-    letter-spacing: 0.5px;
-    text-anchor: middle;
-    dominant-baseline: middle;
-    text-rendering: geometricPrecision;
-    unicode-bidi: plaintext;
-    transition: fill 0.3s ease;
-}
-
-/* تكبير النصوص الخاصة إذا لزم */
-textPath.special-text {
-    font-size: 15px;
-}
-
-/* إخفاء المسارات المساعدة */
-path {
-    fill: none;
-    visibility: hidden;
-}
-
-/* تأثير عند تمرير الفأرة */
-textPath:hover {
-    fill: #ffd166;
-    cursor: default;
-}
-
-
-/*
 .inner-label {
     position: absolute;
     text-align: center;
@@ -467,7 +433,7 @@ textPath:hover {
     z-index: 90;
     pointer-events: none;
     line-height: 1.3;
-} */
+} 
 
 .license-control {
     display: flex;
