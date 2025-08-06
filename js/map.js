@@ -309,66 +309,72 @@ function drawMap() {
       }
     });
   }); */
-// داخل دالة drawMap()، استبدل جزء إنشاء النصوص الداخلية بهذا الكود:
 const innerLabels = [
     { 
         text: "Regulations and\nGovernment Support", 
         color: "#ffff",
-        angle: Math.PI * 0.5 + rotationAngle
+        angle: Math.PI * 0.5 + rotationAngle,
+        radius: 100
     },
     { 
         text: "Ideation Support",
         color: "#ffff",
-        angle: Math.PI * 1.7 + rotationAngle
+        angle: Math.PI * 1.7 + rotationAngle,
+        radius: 100
     },
     { 
         text: "Networking and\nCultures",
         color: "#ffff",
-        angle: Math.PI * 0.9 + rotationAngle
+        angle: Math.PI * 0.9 + rotationAngle,
+        radius: 100
     },
     { 
         text: "Operation, Growth\nand Markets",
         color: "#ffff",
-        angle: Math.PI * 0.1 + rotationAngle
+        angle: Math.PI * 0.1 + rotationAngle,
+        radius: 100
     },
     { 
         text: "Funding",
         color: "#ffff",
-        angle: Math.PI * 3.3 + rotationAngle
+        angle: Math.PI * 3.3 + rotationAngle,
+        radius: 100
     }
 ];
 
-const innerRadius = 100;
 innerLabels.forEach((label) => {
     const lines = label.text.split('\n');
-    const x = centerX + innerRadius * Math.cos(label.angle);
-    const y = centerY + innerRadius * Math.sin(label.angle);
+    const x = centerX + label.radius * Math.cos(label.angle);
+    const y = centerY + label.radius * Math.sin(label.angle);
     
-    // إنشاء مسار نصي منحني
-    const textPath = svg.append("path")
-        .attr("id", `text-path-${label.angle}`)
-        .attr("d", d3.arc()
-            .innerRadius(innerRadius - 10)
-            .outerRadius(innerRadius - 10)
-            .startAngle(label.angle - 0.2)
-            .endAngle(label.angle + 0.2)
-            .cornerRadius(0)())
-        .attr("transform", `translate(${centerX}, ${centerY})`)
-        .style("fill", "none");
+    let rotation = (label.angle * 180 / Math.PI) + 90;
+    if (rotation > 90 && rotation < 270) {
+        rotation += 180;
+    }
     
-    // إضافة النص على المسار المنحني
-    const text = svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("dy", "-0.5em")
-        .style("font-size", "13px")
-        .style("font-weight", "bold")
-        .style("fill", label.color);
+    const g = svg.append("g")
+        .attr("transform", `translate(${x}, ${y}) rotate(${rotation})`)
+        .attr("class", "inner-label");
+    
+    const lineHeight = 15;
+    const startY = -((lines.length - 1) * lineHeight) / 2;
     
     lines.forEach((line, i) => {
-        text.append("textPath")
-            .attr("xlink:href", `#text-path-${label.angle}`)
-            .attr("startOffset", "50%")
-            .attr("dy", i * 15)
+        // إنشاء تأثير القوس باستخدام تحويل SVG
+        const textLength = line.length;
+        const curvature = textLength * 0.5; // ضبط درجة الانحناء
+        
+        g.append("text")
+            .attr("x", 0)
+            .attr("y", startY + i * lineHeight)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", label.color)
+            .attr("font-size", label.text === "Funding" ? "15px" : "13px")
+            .attr("font-weight", "bold")
+            .attr("transform", `rotate(${-rotation} 0 0)`)
+            .attr("textLength", textLength * 8) // ضبط طول النص
+            .attr("lengthAdjust", "spacingAndGlyphs")
             .text(line);
     });
 });
