@@ -317,22 +317,21 @@ function drawMap() {
   { text: "Funding", angle: Math.PI * 3.3 + rotationAngle }
 ];
 
-const arcTextRadius = 115;
+// المسافة داخل الحلقة الداخلية بدقة
+const arcTextRadius = 87; // كانت 115 (بعيدة)، 87 هي الأنسب بصريًا
+const arcLength = 0.45; // زاوية عرض القوس — كلما زادت زاد انحناء النص
 
 innerLabels.forEach((label, i) => {
-  const arcLength = 0.5; // زاوية عرض القوس
   const startAngle = label.angle - arcLength / 2;
   const endAngle = label.angle + arcLength / 2;
 
   const pathId = `inner-label-path-${i}`;
 
-  // إذا كانت الزاوية بين 90° و 270° نقلب القوس لتفادي انقلاب النص
-  const shouldFlip = (label.angle * 180 / Math.PI) > 90 && (label.angle * 180 / Math.PI) < 270;
   const arcPath = d3.arc()
     .innerRadius(arcTextRadius)
     .outerRadius(arcTextRadius)
-    .startAngle(shouldFlip ? endAngle : startAngle)
-    .endAngle(shouldFlip ? startAngle : endAngle);
+    .startAngle(startAngle)
+    .endAngle(endAngle);
 
   svg.append("path")
     .attr("id", pathId)
@@ -351,6 +350,7 @@ innerLabels.forEach((label, i) => {
     .attr("fill", "#ffffff")
     .text(label.text);
 });
+
   
 }
 
