@@ -313,53 +313,72 @@ const innerLabels = [
     { 
         text: "Regulations and Government Support", 
         color: "#ffff",
-        angle: Math.PI * 0.5 + rotationAngle
+        angle: Math.PI * 0.5 + rotationAngle,
+        radius: 100,
+        fontSize: "13px"
     },
     { 
         text: "Ideation Support",
         color: "#ffff",
-        angle: Math.PI * 1.7 + rotationAngle
+        angle: Math.PI * 1.7 + rotationAngle,
+        radius: 100,
+        fontSize: "13px"
     },
     { 
         text: "Networking and Cultures",
         color: "#ffff",
-        angle: Math.PI * 0.9 + rotationAngle
+        angle: Math.PI * 0.9 + rotationAngle,
+        radius: 100,
+        fontSize: "13px"
     },
     { 
         text: "Operation, Growth and Markets",
         color: "#ffff",
-        angle: Math.PI * 0.1 + rotationAngle
+        angle: Math.PI * 0.1 + rotationAngle,
+        radius: 100,
+        fontSize: "13px"
     },
     { 
         text: "Funding",
         color: "#ffff",
-        angle: Math.PI * 3.3 + rotationAngle
+        angle: Math.PI * 3.3 + rotationAngle,
+        radius: 100,
+        fontSize: "15px"
     }
 ];
 
 innerLabels.forEach((label) => {
-    // إنشاء مسار دائري للنص
-    const path = svg.append("path")
-        .attr("id", `label-path-${label.angle}`)
+    // حساب طول النص بالمقدار المناسب للقوس
+    const arcLength = label.text.length * 7;
+    const startAngle = label.angle - (arcLength / 2) / label.radius;
+    const endAngle = label.angle + (arcLength / 2) / label.radius;
+    
+    // إنشاء مسار القوس
+    const pathId = `arc-path-${label.angle}`;
+    svg.append("path")
+        .attr("id", pathId)
         .attr("d", d3.arc()
-            .innerRadius(90)
-            .outerRadius(90)
-            .startAngle(label.angle - 0.3)  // ضبط عرض القوس
-            .endAngle(label.angle + 0.3)   // ضبط عرض القوس
-            .cornerRadius(0)())
+            .innerRadius(label.radius)
+            .outerRadius(label.radius)
+            .startAngle(startAngle)
+            .endAngle(endAngle)
+            .cornerRadius(0))
         .attr("transform", `translate(${centerX}, ${centerY})`)
-        .style("fill", "none");
+        .style("fill", "none")
+        .style("visibility", "hidden");
 
     // إضافة النص على المسار
     svg.append("text")
+        .attr("dy", -5) // تعديل محاذاة عمودية
         .append("textPath")
-        .attr("xlink:href", `#label-path-${label.angle}`)
+        .attr("xlink:href", `#${pathId}`)
         .attr("startOffset", "50%")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
-        .attr("fill", label.color)
-        .attr("font-size", label.text === "Funding" ? "15px" : "13px")
-        .attr("font-weight", "bold")
+        .style("font-size", label.fontSize)
+        .style("font-weight", "bold")
+        .style("fill", label.color)
+        .style("letter-spacing", "0.5px")
         .text(label.text);
 });
   
