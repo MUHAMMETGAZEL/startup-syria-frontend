@@ -348,30 +348,36 @@ const innerLabels = [
 ];
 
 innerLabels.forEach((label) => {
-    // حساب طول النص بالمقدار المناسب للقوس
     const arcLength = label.text.length * 7;
-    const startAngle = label.angle - (arcLength / 2) / label.radius;
-    const endAngle = label.angle + (arcLength / 2) / label.radius;
-    
-    // إنشاء مسار القوس
-    const pathId = `arc-path-${label.angle}`;
+    let angle = label.angle;
+
+    // تصحيح الاتجاه إذا كانت الزاوية في النصف السفلي
+    let flipped = false;
+    if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2) {
+        angle += Math.PI; // قلب الزاوية
+        flipped = true;
+    }
+
+    const startAngle = angle - (arcLength / 2) / label.radius;
+    const endAngle = angle + (arcLength / 2) / label.radius;
+
+    const pathId = arc-path-${label.text.replace(/\s+/g, '-')};
+
     svg.append("path")
         .attr("id", pathId)
         .attr("d", d3.arc()
             .innerRadius(label.radius)
             .outerRadius(label.radius)
             .startAngle(startAngle)
-            .endAngle(endAngle)
-            .cornerRadius(0))
-        .attr("transform", `translate(${centerX}, ${centerY})`)
+            .endAngle(endAngle))
+        .attr("transform", translate(${centerX}, ${centerY}))
         .style("fill", "none")
         .style("visibility", "hidden");
 
-    // إضافة النص على المسار
     svg.append("text")
-        .attr("dy", -5) // تعديل محاذاة عمودية
+        .attr("dy", -5)
         .append("textPath")
-        .attr("xlink:href", `#${pathId}`)
+        .attr("xlink:href", #${pathId})
         .attr("startOffset", "50%")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
@@ -379,9 +385,9 @@ innerLabels.forEach((label) => {
         .style("font-weight", "bold")
         .style("fill", label.color)
         .style("letter-spacing", "0.5px")
+        .attr("transform", flipped ? "rotate(180)" : null)  // قلب النص إذا لزم
         .text(label.text);
 });
-  
 }
 
 // إنشاء خريطة جديدة للقسم الفرعي
